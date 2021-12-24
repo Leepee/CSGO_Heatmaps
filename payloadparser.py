@@ -1,10 +1,22 @@
+import _thread
 import json
+import pickle
+import csv
+
+import matplotlib.pyplot as plt
+import numpy as np
+import math
+import time
+
+locationNumber = 0
+locationDict = dict()
 
 class PayloadParser:
-
+    global locationDict
     @staticmethod
     def parse_payload(payload, gamestate):
 
+        global locationNumber
 
         # Full data dump for debugging:
         # with open('data.json', 'w', encoding='utf-8') as f:
@@ -15,25 +27,29 @@ class PayloadParser:
 
         # print(data)
 
+        # locationNumber = 0
+
+
         if data.get("player").get("activity") == "playing":
-            pass
 
-            # Get a load of general data
-            # dataDict['Phase'] = data.get('phase_countdowns').get('phase')
-            # dataDict['PhaseTimer'] = round(float(data.get('phase_countdowns').get('phase_ends_in')))
-            # dataDict['RoundNumber'] = data.get('map').get('round')
-            #
-            # dataDict['TWins'] = data.get('map').get('team_t').get('score')
-            # dataDict['CTWins'] = data.get('map').get('team_ct').get('score')
-            #
-            # dataDict['bombPhase'] = data.get('bomb').get('state')
-            # dataDict['bombTimer'] = data.get('bomb').get('countdown')
-            #
-            # # Get a load of observed player data
-            # dataDict['obsPlayerName'] = data.get('player').get('name')
-            # dataDict['obsPlayerHealth'] = data.get('player').get('state').get('health')
-            # dataDict['obsPlayerMoney'] = data.get('player').get('state').get('money')
-            # dataDict['obsPlayerKills'] = data.get('player').get('match_stats').get('kills')
-            # dataDict['obsPlayerDeaths'] = data.get('player').get('match_stats').get('deaths')
+            for player in data.get('allplayers'):
+                locationDict[locationNumber] = data.get('allplayers').get(player).get('position').split(', ')
+                locationNumber = locationNumber + 1
 
+        print(locationDict)
+
+        if locationNumber % 100 == 0:
+            print('Saving File')
+
+            with open('locations.csv', mode='a', newline='', encoding='utf-8') as locations_file:
+                locations_writer = csv.writer(locations_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+                for entry in locationDict:
+                    locations_writer.writerow([locationDict[entry][0], locationDict[entry][1]])
+                    print(entry)
+
+            locationDict.clear()
+
+            # with open('saved_dictionary.pkl', 'wb') as f:
+            #     pickle.dump(locationDict, f)
 
