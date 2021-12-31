@@ -3,7 +3,6 @@
 # import numpy as np
 import pandas as pd
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -11,27 +10,32 @@ from matplotlib.colors import Normalize
 from scipy.interpolate import interpn
 
 
-def density_scatter( x , y, ax = None, sort = True, bins = 20, **kwargs )   :
+def density_scatter(x, y, ax=None, sort=True, bins=20, **kwargs):
     """
     Scatter plot colored by 2d histogram
     """
-    if ax is None :
-        fig , ax = plt.subplots()
-    data , x_e, y_e = np.histogram2d( x, y, bins = bins, density = True )
-    z = interpn( ( 0.5*(x_e[1:] + x_e[:-1]) , 0.5*(y_e[1:]+y_e[:-1]) ) , data , np.vstack([x,y]).T , method = "splinef2d", bounds_error = False)
+    if ax is None:
+        fig, ax = plt.subplots()
+    data, x_e, y_e = np.histogram2d(x, y, bins=bins, density=True)
+    z = interpn((0.5 * (x_e[1:] + x_e[:-1]), 0.5 * (y_e[1:] + y_e[:-1])), data, np.vstack([x, y]).T, method="splinef2d",
+                bounds_error=False)
 
-    #To be sure to plot all data
+    img = plt.imread("mirage" + ".png")
+    ax.imshow(img, extent=[-3000, 2300, -2700, 1000])
+
+
+    # To be sure to plot all data
     z[np.where(np.isnan(z))] = 0.0
 
     # Sort the points by density, so that the densest points are plotted last
-    if sort :
+    if sort:
         idx = z.argsort()
         x, y, z = x[idx], y[idx], z[idx]
 
-    ax.scatter( x, y, c=z, **kwargs )
+    ax.scatter(x, y, c=z, cmap='viridis', **kwargs)
 
-    norm = Normalize(vmin = np.min(z), vmax = np.max(z))
-    cbar = fig.colorbar(cm.ScalarMappable(norm = norm), ax=ax)
+    norm = Normalize(vmin=np.min(z), vmax=np.max(z))
+    cbar = fig.colorbar(cm.ScalarMappable(norm=norm), ax=ax)
     cbar.ax.set_ylabel('Density')
 
     plt.show()
@@ -39,19 +43,12 @@ def density_scatter( x , y, ax = None, sort = True, bins = 20, **kwargs )   :
     return ax
 
 
-if "__main__" == __name__ :
-
+if "__main__" == __name__:
     df = pd.read_csv("test_data.csv")
-    x=df.get('x')
-    y=df.get('y')
+    plotx = df.get('x')
+    ploty = df.get('y')
 
-
-    # x = np.random.normal(size=100000)
-    # y = x * 3 + np.random.normal(size=100000)
-    density_scatter( x, y, bins = [30,30] )
-
-
-
+    density_scatter(plotx, ploty, bins=[10, 10])
 
 # import pandas as pd
 # import matplotlib.pyplot as plt
@@ -71,18 +68,6 @@ if "__main__" == __name__ :
 # # plt.figure(figsize = (16,16))
 # # plt.hist2d(x='x', y='y', bins=50, cmap=plt.cm.jet)
 # plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # import pandas as pd
