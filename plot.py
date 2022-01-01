@@ -35,8 +35,10 @@ def density_scatter(x, y, ax=None, sort=True, bins=20, **kwargs):
     ax.scatter(x, y, c=z, cmap='viridis', **kwargs)
 
     norm = Normalize(vmin=np.min(z), vmax=np.max(z))
-    cbar = fig.colorbar(cm.ScalarMappable(norm=norm), ax=ax)
-    cbar.ax.set_ylabel('Density')
+    # cbar = fig.colorbar(cm.ScalarMappable(norm=norm), ax=ax)
+    # cbar.ax.set_ylabel('Density')
+
+    plt.axis('off')
 
     plt.show()
 
