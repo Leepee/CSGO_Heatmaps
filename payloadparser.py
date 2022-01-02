@@ -33,7 +33,7 @@ class PayloadParser:
         if data.get("player").get("activity") == "playing":
 
             for player in data.get('allplayers'):
-                locationDict[locationNumber] = data.get('allplayers').get(player).get('position').split(', ')
+                location = data.get('allplayers').get(player).get('position').split(', ')
                 locationNumber = locationNumber + 1
                 with open(data.get('allplayers').get(player).get('name')
                           + '_' + data.get('map').get('name') + '.csv',
@@ -41,13 +41,9 @@ class PayloadParser:
                     locations_writer = csv.writer(locations_file, delimiter=',', quotechar='"',
                                                   quoting=csv.QUOTE_MINIMAL)
 
-                    locations_writer.writerow([locationDict[0][0], locationDict[0][1]])
-                    print(locationDict[0][0] + locationDict[0][1])
-                    locationDict.clear()
-
-
-
-
+                    locations_writer.writerow([location[0], location[1]])
+                    print(location[0] + location[1])
+                    location = None
 
         print(locationDict)
 

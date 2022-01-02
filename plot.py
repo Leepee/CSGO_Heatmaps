@@ -52,7 +52,8 @@ if "__main__" == __name__:
     if sys.argv[1] is not None:
         try:
             df = pd.read_csv(sys.argv[1])
-        except FileNotFoundError:
+            mapname = sys.argv.split('_')
+        except IndexError:
             df = pd.read_csv("test_data.csv")
             pass
 
