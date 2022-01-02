@@ -35,20 +35,33 @@ class PayloadParser:
             for player in data.get('allplayers'):
                 locationDict[locationNumber] = data.get('allplayers').get(player).get('position').split(', ')
                 locationNumber = locationNumber + 1
+                with open(data.get('allplayers').get(player).get('name')
+                          + '_' + data.get('map').get('name') + '.csv',
+                          mode='a', newline='', encoding='utf-8') as locations_file:
+                    locations_writer = csv.writer(locations_file, delimiter=',', quotechar='"',
+                                                  quoting=csv.QUOTE_MINIMAL)
+
+                    locations_writer.writerow([locationDict[0][0], locationDict[0][1]])
+                    print(locationDict[0][0] + locationDict[0][1])
+                    locationDict.clear()
+
+
+
+
 
         print(locationDict)
 
-        if locationNumber % 100 == 0:
-            print('Saving File')
-
-            with open('locations.csv', mode='a', newline='', encoding='utf-8') as locations_file:
-                locations_writer = csv.writer(locations_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-
-                for entry in locationDict:
-                    locations_writer.writerow([locationDict[entry][0], locationDict[entry][1]])
-                    print(entry)
-
-            locationDict.clear()
+        # if locationNumber % 100 == 0:
+        #     print('Saving File')
+        #
+        #     with open('locations.csv', mode='a', newline='', encoding='utf-8') as locations_file:
+        #         locations_writer = csv.writer(locations_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        #
+        #         for entry in locationDict:
+        #             locations_writer.writerow([locationDict[entry][0], locationDict[entry][1]])
+        #             print(entry)
+        #
+        #     locationDict.clear()
 
             # with open('saved_dictionary.pkl', 'wb') as f:
             #     pickle.dump(locationDict, f)
