@@ -1,18 +1,19 @@
 # import matplotlib as mpl
 # import matplotlib.pyplot as plt
 # import numpy as np
-
+import os
 import sys
 import pandas as pd
-
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.colors import Normalize
 from scipy.interpolate import interpn
 
+# map_name = 'de_mirage'
 
 def density_scatter(x, y, ax=None, sort=True, bins=20, **kwargs):
+    global map_name
     """
     Scatter plot colored by 2d histogram
     """
@@ -22,9 +23,8 @@ def density_scatter(x, y, ax=None, sort=True, bins=20, **kwargs):
     z = interpn((0.5 * (x_e[1:] + x_e[:-1]), 0.5 * (y_e[1:] + y_e[:-1])), data, np.vstack([x, y]).T, method="splinef2d",
                 bounds_error=False)
 
-    img = plt.imread("mirage" + ".png")
+    img = plt.imread(map_name + ".png")
     ax.imshow(img, extent=[-3000, 2300, -2700, 1000])
-
 
     # To be sure to plot all data
     z[np.where(np.isnan(z))] = 0.0
@@ -40,7 +40,8 @@ def density_scatter(x, y, ax=None, sort=True, bins=20, **kwargs):
     # cbar = fig.colorbar(cm.ScalarMappable(norm=norm), ax=ax)
     # cbar.ax.set_ylabel('Density')
 
-    plt.axis('off')
+    # plt.axis('off')
+    plt.title(plot_title)
 
     plt.show()
 
@@ -49,15 +50,36 @@ def density_scatter(x, y, ax=None, sort=True, bins=20, **kwargs):
 
 if "__main__" == __name__:
 
-    if sys.argv[1] is not None:
-        try:
+    global map_name
+
+    try:
+        if sys.argv[1] is not None:
+
             df = pd.read_csv(sys.argv[1])
-            mapname = sys.argv.split('_')
-        except IndexError:
+            map_name = sys.argv[1].split('_')[1] + sys.argv[2].strip('.csv')
+            print(sys.argv[1].split('_')[1])
+
+    except IndexError:
+        choice = input("No argument or argument error detected. Do you want to process all CSV? ")
+        if choice == 'yes' or 'y':
+            for file in os.listdir("playerdata"):
+                if file.endswith(".csv"):
+                    print(file.split('_')[1] + '_' + file.split('_')[2].strip('.csv'))
+                    map_name = file.split('_')[1] + '_' + file.split('_')[2].strip('.csv')
+
+                    df = pd.read_csv('playerdata/'+ file)
+                    plotx = df.get('x')
+                    ploty = df.get('y')
+                    plot_title = str(file)
+
+                    density_scatter(plotx, ploty, bins=[10, 10])
+
+        else:
+            map_name = 'de_mirage'
             df = pd.read_csv("test_data.csv")
-            pass
+            print('Using test data')
 
-    plotx = df.get('x')
-    ploty = df.get('y')
+            plotx = df.get('x')
+            ploty = df.get('y')
 
-    density_scatter(plotx, ploty, bins=[10, 10])
+            density_scatter(plotx, ploty, bins=[10, 10])

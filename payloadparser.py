@@ -45,8 +45,6 @@ class PayloadParser:
                     print(location[0] + location[1])
                     location = None
 
-        print(locationDict)
-
         # if locationNumber % 100 == 0:
         #     print('Saving File')
         #
