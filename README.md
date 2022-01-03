@@ -1,5 +1,7 @@
-# CSGO4broadcast_Gamestate_to_Aston
+# CSGO player heatmaps
 
-This project is designed to be an interface between the CSGO GSI and a TCP data connection that can be pulled by Brainstorm's Aston broadcast CG software. 
+This project is a visualisation for use by Esports casters or for analysis of player location data.
 
-This is a work in progress.
+main.py parses the gamestate data being output from the running game and saves the location data for each player in their own CSV file. Plot.py then allows you to put the player name as an arguement and plot a heatmap of their location density on a map of the game. 
+
+Maps are provided with thanks to Old Hands via the following link: https://steamcommunity.com/sharedfiles/filedetails/?id=230110279
